@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'ckeditor_uploader',
+    'corsheaders',
     'ckeditor',
     'rest_framework',
     'rest_framework.authtoken',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -122,6 +124,21 @@ USE_I18N = True
 USE_TZ = True
 
 
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
 AUTH_USER_MODEL = 'account.User'
 
 
@@ -147,9 +164,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
-
-
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
