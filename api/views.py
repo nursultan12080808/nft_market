@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import status, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from api.permissions import IsOwnerProductOrReadOnly, IsSalesmanOrReadOnly, IsAdminUserOrReadOnly, IsSalesman
@@ -35,15 +34,12 @@ class NftViewSet(ModelViewSet):
         return self.serializer_class[self.action] 
 
 
-
-
 class CategoryViewSet(ModelViewSet):
     queryset = Categories.objects.all()
     lookup_field = 'id'
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     permission_classes = (IsAuthenticatedOrReadOnly, IsSalesmanOrReadOnly)
-
 
 
 
@@ -66,10 +62,19 @@ class UserViewSet(RetrieveAPIView):
 
 class TokenViewSet(ModelViewSet):
     queryset = Token.objects.all()
+    serializer_class = {
+        'list': DetailTokenSerializer,
+        'retrieve': DetailTokenSerializer,
+        'create': TokenSerializer,
+        'update': TokenSerializer,
+    }
     serializer_class = TokenSerializer
     lookup_field = 'id'
     permission_classes = (IsAuthenticatedOrReadOnly, IsSalesmanOrReadOnly, IsOwnerProductOrReadOnly)
-
+    def get_serializer_class(self):
+        if self.action == 'partial_update':
+            return self.serializer_class['update']
+        return self.serializer_class[self.action] 
 
 
 

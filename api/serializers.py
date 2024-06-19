@@ -62,11 +62,17 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         exclude = ('is_staff', 'is_active', 'password', 'is_superuser', 'groups', 'user_permissions')
 
+
+
+class DetailTokenSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Token
+        fields = '__all__'
 
 
 class TokenSerializer(serializers.ModelSerializer):

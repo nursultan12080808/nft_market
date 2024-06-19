@@ -14,6 +14,7 @@ class UserAdmin(BaseUserAdmin):
         'get_full_name',
         'role',
         'get_avatar',
+        'subscriptions',
     )
     list_display_links = ('id', 'email',)
     search_fields = ('first_name', 'last_name', 'email', 'phone')
@@ -31,7 +32,8 @@ class UserAdmin(BaseUserAdmin):
             'get_avatar',
             'first_name',
             'last_name',
-            'bio',
+            'bio', 
+            'subscriptions',
         )}),
         (_('Permissions'), {'fields': (
             'role',

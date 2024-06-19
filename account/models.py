@@ -25,7 +25,8 @@ class User(AbstractUser):
     phone = PhoneNumberField(max_length=100, unique=True, verbose_name='номер телефона')
     email = models.EmailField(blank=True, verbose_name='электронная почта', unique=True)
     role = models.CharField('роль', choices=ROLE, default=CLIENT, max_length=15)
-    bio = models.TextField(verbose_name='Биография')  # Изменено на TextField
+    bio = models.TextField(verbose_name='Биография')
+    subscriptions = models.IntegerField(verbose_name="Подписки", null=True, blank=True, default=0)
 
     objects = UserManager()
 
