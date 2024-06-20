@@ -12,6 +12,7 @@ from api.paginations import MediumPagination
 from .filters import NftFilter
 from .serializers import *
 from nft_app.models import *
+from account.models import User
 
 
 class NftViewSet(ModelViewSet):
@@ -142,8 +143,20 @@ class RegisterApiView(GenericAPIView):
     
 
 
-def buyNfts(request, id):
-    print(request.headers)
-    pass
+class NftBuy(GenericAPIView):
+
+    def post(self, request, id, *args, **kwargs):
+        token = request.headers["Authorization"].split(' ')[1]
+        token = Token.objects.get(key=token)
+        nft = Nft.objects.get(id=id)
+        user_data = TokenSerializer(instance=token)
+        user = User.objects.get(id = user_data.data["user"]["id"])
+        if nft and token:
+            nft.user = user
+            nft.save()
+        return Response({
+            "user": 'asd'
+        })
+
 
 # Create your views here.
