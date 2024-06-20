@@ -155,7 +155,7 @@ class NftBuy(GenericAPIView):
             nft.user = user
             nft.save()
         return Response({
-            "user": 'asd'
+            "nft": nft.user
         })
 
 
