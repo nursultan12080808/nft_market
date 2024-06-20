@@ -26,7 +26,7 @@ class User(AbstractUser):
     email = models.EmailField(blank=True, verbose_name='электронная почта', unique=True)
     role = models.CharField('роль', choices=ROLE, default=CLIENT, max_length=15)
     bio = models.TextField(verbose_name='Биография')
-    subscriptions = models.IntegerField(verbose_name="Подписки", null=True, blank=True, default=0)
+    followers = models.IntegerField(verbose_name="Подписки", null=True, blank=True, default=0)
 
     objects = UserManager()
 

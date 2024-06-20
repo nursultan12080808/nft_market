@@ -14,7 +14,7 @@ class UserAdmin(BaseUserAdmin):
         'get_full_name',
         'role',
         'get_avatar',
-        'subscriptions',
+        'followers',
     )
     list_display_links = ('id', 'email',)
     search_fields = ('first_name', 'last_name', 'email', 'phone')
