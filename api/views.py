@@ -155,7 +155,7 @@ class NftBuy(GenericAPIView):
             nft.user = user
             nft.save()
         return Response({
-            "data": f"Вы удачно купили NFT {nft}"
+            "data": f"Вы удачно купили {nft}!!!"
         })
 
 
