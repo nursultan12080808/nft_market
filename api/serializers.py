@@ -22,8 +22,17 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ('is_staff', 'is_active', 'password', 'is_superuser', 'groups', 'user_permissions')
+
+
+
 class DetailNftSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
+    user = UserSerializer()
     tags = TagSerializer(many=True)
     class Meta:
         model = Nft
@@ -47,6 +56,7 @@ class NftSerializer(serializers.ModelSerializer):
 
 class ListNftSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
+    user = UserSerializer()
     tags = TagSerializer(many=True)
     class Meta:
         model = Nft
@@ -59,12 +69,6 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        exclude = ('is_staff', 'is_active', 'password', 'is_superuser', 'groups', 'user_permissions')
 
 
 

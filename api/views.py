@@ -139,4 +139,11 @@ class RegisterApiView(GenericAPIView):
             **user_serializer.data,
             'token': token.key
         })
+    
+
+
+def buyNfts(request, id):
+    print(request.headers)
+    pass
+
 # Create your views here.

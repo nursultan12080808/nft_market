@@ -8,6 +8,8 @@ router.register('categories', CategoryViewSet)
 router.register('tags', TagViewSet)
 router.register('tokens', TokenViewSet, basename="tokens")
 urlpatterns = [
+    path('nfts/buy/<int:id>', buyNfts),
+
     path('user/<int:id>/', UserViewSet.as_view()),
 
     path('auth/login/', LoginApiView.as_view()),
