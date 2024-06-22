@@ -32,6 +32,9 @@ class UserAdmin(BaseUserAdmin):
             'first_name',
             'last_name',
             'bio', 
+            'cash',
+            'followers',
+            'binance'
         )}),
         (_('Permissions'), {'fields': (
             'role',
@@ -51,6 +54,9 @@ class UserAdmin(BaseUserAdmin):
         'get_avatar',
         'date_joined',
         'last_login',
+        'cash',
+        'followers',
+        'binance'
     )
     # autocomplete_fields = (
     #     'address',

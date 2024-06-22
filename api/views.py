@@ -1,3 +1,5 @@
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import status, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from api.permissions import IsOwnerProductOrReadOnly, IsSalesmanOrReadOnly, IsAdminUserOrReadOnly, IsSalesman
@@ -55,7 +57,7 @@ class TagViewSet(ModelViewSet):
 
 class UserViewSet(RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = DetailUserSerializer
     lookup_field = 'id'
     permission_classes = (IsAuthenticatedOrReadOnly, IsSalesmanOrReadOnly, IsOwnerProductOrReadOnly)
     
@@ -69,7 +71,6 @@ class TokenViewSet(ModelViewSet):
         'create': TokenSerializer,
         'update': TokenSerializer,
     }
-    serializer_class = TokenSerializer
     lookup_field = 'id'
     permission_classes = (IsAuthenticatedOrReadOnly, IsSalesmanOrReadOnly, IsOwnerProductOrReadOnly)
     def get_serializer_class(self):
@@ -91,7 +92,7 @@ class LoginApiView(GenericAPIView):
         user = authenticate(email=email, password=password)
         if user:
             token, created = Token.objects.get_or_create(user=user)
-            user_serializer = UserSerializer(user, context={'request': request})
+            user_serializer = DetailUserSerializer(user, context={'request': request})
             return Response({
                 **user_serializer.data,
                 'token': token.key
@@ -118,7 +119,7 @@ class RedactorProfileApiView(RetrieveUpdateAPIView):
             else:
                 return Response({'error': 'Пароль неверный'}, status=status.HTTP_400_BAD_REQUEST)
         token, created = Token.objects.get_or_create(user=user)
-        user_serializer = UserSerializer(user, context={'request': request})
+        user_serializer = DetailUserSerializer(user, context={'request': request})
         return Response({
             **user_serializer.data,
             'token': token.key
@@ -135,7 +136,7 @@ class RegisterApiView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         token, created = Token.objects.get_or_create(user=user)
-        user_serializer = UserSerializer(user, context={'request': request})
+        user_serializer = DetailUserSerializer(user, context={'request': request})
         return Response({
             **user_serializer.data,
             'token': token.key
@@ -144,6 +145,8 @@ class RegisterApiView(GenericAPIView):
 
 
 class NftBuy(GenericAPIView):
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def post(self, request, id, *args, **kwargs):
         token = request.headers["Authorization"].split(' ')[1]
@@ -155,8 +158,58 @@ class NftBuy(GenericAPIView):
             nft.user = user
             nft.save()
         return Response({
-            "data": f"Вы удачно купили {nft}!!!"
+            "data": f"Вы успешно купили {nft}!!!"
         })
+
+
+
+class BinanceAcc(GenericAPIView):
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    
+    def post(self, request, *args, **kwargs):
+        token = request.headers["Authorization"].split(' ')[1]
+        token = Token.objects.get(key=token)
+        user = User.objects.get(id = token.user.id)
+        email = request.data.get("email")
+        try:
+            acc = get_object_or_404(Binance, email = email)
+        except Http404:
+            return Response({"error": "Нету такого пользователя!"})
+        if acc:
+            password_bin = request.data.get('password')
+            if acc.password == password_bin[0:len(password_bin) - 1]:
+                serializer = BinanceSerializer(acc)
+                print(user.binance)
+                user.binance = acc
+                user.save()
+                return Response({"data": serializer.data})
+            return Response({"error": "Не правильный пароль!"})
+        return Response({"error": "Нету такого пользователя!"})
+    
+    
+
+class GetMoney(GenericAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    def post(self, request, id, *args, **kwargs):
+        token = request.headers["Authorization"].split(' ')[1]
+        token = Token.objects.get(key=token)
+        user = get_object_or_404(User, id = token.user.id)
+        if user.binance:
+            binance = Binance.objects.get(id = id)
+            money = request.data.get("price")
+            print(money)
+            money = int(money)
+            if (binance.price - money) > 0:
+                binance.price = binance.price - money
+                user.cash = user.cash + money
+                binance.save()
+                user.save()
+                return Response({"data": f"Ваш баланс паполнен на {money}"})
+            return Response({"error": f"На вашем балансе не достаточно средств"})
+        return Response({"error": f"Нет бинанс аккаунта"})
+        
+
 
 
 # Create your views here.

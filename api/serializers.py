@@ -22,7 +22,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -114,3 +113,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data['password'] = make_password(password)
 
         return super().create(validated_data)
+    
+
+class BinanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Binance
+        fields = '__all__'
+
+
+class DetailUserSerializer(serializers.ModelSerializer):
+    binance = BinanceSerializer()
+    class Meta:
+        model = User
+        exclude = ('is_staff', 'is_active', 'password', 'is_superuser', 'groups', 'user_permissions')
+

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django import forms
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
-from .models import Categories, Nft, Tags
+from .models import Categories, Nft, Tags, Binance
 
 
 class NftAdminForm(forms.ModelForm):
@@ -12,6 +12,16 @@ class NftAdminForm(forms.ModelForm):
     class Meta:
         model = Nft
         fields = '__all__'
+
+
+
+@admin.register(Binance)
+class NinanceAdmin(admin.ModelAdmin):
+    list_display = ('id','email')
+    list_display_links = ('id','email')
+    readonly_fields = ('created_at', 'updated_at')
+
+
 
 
 @admin.register(Nft)

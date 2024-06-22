@@ -44,4 +44,16 @@ class Tags(models.Model):
     name = models.CharField(verbose_name="Название тега", max_length=100)
     def __str__(self) -> str:
         return f'{self.name}'
+    
+
+class Binance(TimeStampAbstractModel):
+    class Meta:
+        verbose_name = 'Бинанс'
+        verbose_name_plural = 'Бинанс'
+    avatar = models.ImageField(upload_to='avatars/', verbose_name='аватарка', null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Кошелёк в ETH')
+    email = models.EmailField(verbose_name="Электроный адрес")
+    password = models.CharField(verbose_name="Пароль от акк", max_length=20)
+
+
 # Create your models here.

@@ -26,8 +26,10 @@ class User(AbstractUser):
     email = models.EmailField(blank=True, verbose_name='электронная почта', unique=True)
     role = models.CharField('роль', choices=ROLE, default=CLIENT, max_length=15)
     bio = models.TextField(verbose_name='Биография')
-    followers = models.IntegerField(verbose_name="Подписки", null=True, blank=True, default=0, editable=False)
-    request_buy = models.ManyToManyField('nft_app.nft', related_name='buy_requests', blank=True, null=True, verbose_name='Запросы на покупку', editable=False)
+    cash = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Кошелёк в ETH', editable=False, default=0.00)
+    followers = models.IntegerField(verbose_name="Подписчики", default=0, editable=False)
+    request_buy = models.ManyToManyField('nft_app.nft', related_name='buy_requests', verbose_name='Запросы на покупку', editable=False)
+    binance = models.ForeignKey('nft_app.Binance', related_name="user", editable=False,null=True, blank=True, on_delete=models.CASCADE)
 
     objects = UserManager()
 
@@ -42,3 +44,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.email or str(self.phone)}'
+
+
+

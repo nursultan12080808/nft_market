@@ -8,7 +8,11 @@ router.register('categories', CategoryViewSet)
 router.register('tags', TagViewSet)
 router.register('tokens', TokenViewSet, basename="tokens")
 urlpatterns = [
+    path('binance/login/', BinanceAcc.as_view()),
+
     path('nfts/buy/<int:id>/', NftBuy.as_view()),
+
+    path('get_money/<int:id>/', GetMoney.as_view()),
 
     path('user/<int:id>/', UserViewSet.as_view()),
 
