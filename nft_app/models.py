@@ -18,7 +18,7 @@ class Nft(TimeStampAbstractModel):
     name = models.CharField(verbose_name="Название Nft", max_length=100, unique=True)
     image = models.ImageField(verbose_name="Изображение NFT", upload_to="nft_image/")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена в Ethereum')
-    token = models.TextField(verbose_name="Токен NFT", unique=True, editable=False)
+    token = models.TextField(verbose_name="Токен NFT", unique=True, editable=False, primary_key=True)
     description = models.TextField(verbose_name="Описание NFT")
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE, related_name="nft")
     category = models.ForeignKey('nft_app.Categories', related_name="nfties",verbose_name="Выберите категории", on_delete=models.CASCADE)

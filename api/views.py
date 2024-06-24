@@ -19,7 +19,7 @@ from account.models import User
 
 class NftViewSet(ModelViewSet):
     queryset = Nft.objects.all()
-    lookup_field = 'id'
+    lookup_field = 'token'
     serializer_class = {
         'list': ListNftSerializer,
         'retrieve': DetailNftSerializer,
@@ -148,18 +148,33 @@ class NftBuy(GenericAPIView):
 
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    def post(self, request, id, *args, **kwargs):
+    def post(self, request, token_nft, *args, **kwargs):
         token = request.headers["Authorization"].split(' ')[1]
         token = Token.objects.get(key=token)
-        nft = Nft.objects.get(id=id)
+        if token_nft[-1] == 'n':
+            token_nft = token_nft.replace("\n", "")
+        nft = get_object_or_404(Nft, token=token_nft)
         user_data = TokenSerializer(instance=token)
         user = User.objects.get(id = user_data.data["user"]["id"])
-        if nft and token:
-            nft.user = user
-            nft.save()
+        print(user)
+        if nft and user:
+            seller = User.objects.get(id = nft.user.id)
+            if nft.price <= user.cash:
+                nft.user = user
+                seller.cash = seller.cash + nft.price
+                user.cash = user.cash - nft.price
+                nft.save()
+                user.save()
+                seller.save()
+                return Response({
+                "data": f"Вы успешно купили {nft}!!!"
+                })
+            return Response({
+            "error": f"У вас не достаточно средств"
+            })
         return Response({
-            "data": f"Вы успешно купили {nft}!!!"
-        })
+            "error": "Что то пошло не так :("
+            })
 
 
 

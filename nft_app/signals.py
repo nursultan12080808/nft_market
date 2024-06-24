@@ -6,7 +6,7 @@ import argparse
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 from django.dispatch import receiver
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from .models import *
 
 
@@ -25,6 +25,7 @@ key = generate_key()
 
 
 
-@receiver(pre_save, sender=Nft)
-def pre_save_nft(instance: Nft, *args, **kwargs):
-    instance.token = encrypt_text(instance.name, key)
+@receiver(post_save, sender=Nft)
+def pre_save_nft(sender,instance: Nft, created, *args, **kwargs):
+    if created:
+        instance.token = encrypt_text(instance.name, key)

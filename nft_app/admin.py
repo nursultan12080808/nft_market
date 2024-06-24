@@ -26,7 +26,7 @@ class NinanceAdmin(admin.ModelAdmin):
 
 @admin.register(Nft)
 class NftAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'get_image',)
+    list_display = ('name', 'price', 'get_image','token')
     list_display_links = ('name',)
     readonly_fields = ('created_at', 'updated_at', 'get_big_image', 'token')
     filter_horizontal = ('tags',)

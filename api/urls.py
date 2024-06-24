@@ -10,7 +10,7 @@ router.register('tokens', TokenViewSet, basename="tokens")
 urlpatterns = [
     path('binance/login/', BinanceAcc.as_view()),
 
-    path('nfts/buy/<int:id>/', NftBuy.as_view()),
+    path('nft_buy/<str:token_nft>/', NftBuy.as_view()),
 
     path('get_money/<int:id>/', GetMoney.as_view()),
 
