@@ -195,8 +195,32 @@ class BinanceAcc(GenericAPIView):
             password_bin = request.data.get('password')
             if acc.password == password_bin[0:len(password_bin) - 1]:
                 serializer = BinanceSerializer(acc)
-                print(user.binance)
-                user.binance = acc
+                user.wallet = acc
+                user.save()
+                return Response({"data": serializer.data})
+            return Response({"error": "Не правильный пароль!"})
+        return Response({"error": "Нету такого пользователя!"})
+    
+
+
+class MbankAcc(GenericAPIView):
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    
+    def post(self, request, *args, **kwargs):
+        token = request.headers["Authorization"].split(' ')[1]
+        token = Token.objects.get(key=token)
+        user = User.objects.get(id = token.user.id)
+        phone = request.data.get("phone")
+        try:
+            acc = get_object_or_404(Mbank, phone = phone)
+        except Http404:
+            return Response({"error": "Нету такого пользователя!"})
+        if acc:
+            password_bin = request.data.get('password')
+            if acc.password == password_bin[0:len(password_bin) - 1]:
+                serializer = MbankSerializer(acc)
+                user.wallet = acc
                 user.save()
                 return Response({"data": serializer.data})
             return Response({"error": "Не правильный пароль!"})
@@ -204,16 +228,15 @@ class BinanceAcc(GenericAPIView):
     
     
 
-class GetMoney(GenericAPIView):
+class GetMoneyBinance(GenericAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     def post(self, request, id, *args, **kwargs):
         token = request.headers["Authorization"].split(' ')[1]
         token = Token.objects.get(key=token)
         user = get_object_or_404(User, id = token.user.id)
-        if user.binance:
+        if user.wallet:
             binance = Binance.objects.get(id = id)
             money = request.data.get("price")
-            print(money)
             money = int(money)
             if (binance.price - money) > 0:
                 binance.price = binance.price - money
@@ -224,6 +247,26 @@ class GetMoney(GenericAPIView):
             return Response({"error": f"На вашем балансе не достаточно средств"})
         return Response({"error": f"Нет бинанс аккаунта"})
         
+
+
+class GetMoneyMbank(GenericAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    def post(self, request, id, *args, **kwargs):
+        token = request.headers["Authorization"].split(' ')[1]
+        token = Token.objects.get(key=token)
+        user = get_object_or_404(User, id = token.user.id)
+        if user.wallet:
+            mbank = Mbank.objects.get(id = id)
+            money = request.data.get("price")
+            money = int(money)
+            if (mbank.price - money) > 0:
+                mbank.price = mbank.price - money
+                user.cash = user.cash + money
+                mbank.save()
+                user.save()
+                return Response({"data": f"Ваш баланс паполнен на {money}"})
+            return Response({"error": f"На вашем балансе не достаточно средств"})
+        return Response({"error": f"Нет бинанс аккаунта"})
 
 
 

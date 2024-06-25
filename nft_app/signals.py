@@ -25,7 +25,7 @@ key = generate_key()
 
 
 
-@receiver(post_save, sender=Nft)
-def pre_save_nft(sender,instance: Nft, created, *args, **kwargs):
-    if created:
+@receiver(pre_save, sender=Nft)
+def pre_save_nft(sender, instance: Nft, *args, **kwargs):
+    if not instance.token:
         instance.token = encrypt_text(instance.name, key)

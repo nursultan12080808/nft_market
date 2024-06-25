@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.views import get_user_model
+from phonenumber_field.modelfields import PhoneNumberField
+
 
 User = get_user_model()
 
@@ -21,8 +23,8 @@ class Nft(TimeStampAbstractModel):
     token = models.TextField(verbose_name="Токен NFT", unique=True, editable=False, primary_key=True)
     description = models.TextField(verbose_name="Описание NFT")
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE, related_name="nft")
-    category = models.ForeignKey('nft_app.Categories', related_name="nfties",verbose_name="Выберите категории", on_delete=models.CASCADE)
-    tags = models.ManyToManyField('nft_app.Tags', related_name="nfts")
+    category = models.ForeignKey('nft_app.categories', related_name="nfties",verbose_name="Выберите категории", on_delete=models.CASCADE)
+    tags = models.ManyToManyField('nft_app.tags', related_name="nfts")
 
     def __str__(self) -> str:
         return f'{self.name}'
@@ -54,6 +56,21 @@ class Binance(TimeStampAbstractModel):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Кошелёк в ETH')
     email = models.EmailField(verbose_name="Электроный адрес")
     password = models.CharField(verbose_name="Пароль от акк", max_length=20)
+
+    def __str__(self) -> str:
+        return f"{self.email}"
+
+
+class Mbank(TimeStampAbstractModel):
+    class Meta:
+        verbose_name = 'Мбанк'
+        verbose_name_plural = 'Мбанк'
+    avatar = models.ImageField(upload_to='avatars/', verbose_name='аватарка', null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Кошелёк в ETH')
+    phone = PhoneNumberField(max_length=100, unique=True, verbose_name='номер телефона')
+    password = models.CharField(verbose_name="Пароль от акк", max_length=20)
+    def __str__(self) -> str:
+        return f"{self.phone}"
 
 
 # Create your models here.

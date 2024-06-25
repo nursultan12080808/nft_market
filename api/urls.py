@@ -9,10 +9,12 @@ router.register('tags', TagViewSet)
 router.register('tokens', TokenViewSet, basename="tokens")
 urlpatterns = [
     path('binance/login/', BinanceAcc.as_view()),
+    path('mbank/login/', MbankAcc.as_view()),
 
     path('nft_buy/<str:token_nft>/', NftBuy.as_view()),
 
-    path('get_money/<int:id>/', GetMoney.as_view()),
+    path('get_money_binace/<int:id>/', GetMoneyBinance.as_view()),
+    path('get_money_mbank/<int:id>/', GetMoneyMbank.as_view()),
 
     path('user/<int:id>/', UserViewSet.as_view()),
 

@@ -121,6 +121,12 @@ class BinanceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class MbankSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mbank
+        fields = '__all__'
+
+
 class DetailUserSerializer(serializers.ModelSerializer):
     binance = BinanceSerializer()
     class Meta:
