@@ -34,7 +34,8 @@ class UserAdmin(BaseUserAdmin):
             'bio', 
             'cash',
             'followers',
-            'wallet'
+            'binance',
+            'mbank',
         )}),
         (_('Permissions'), {'fields': (
             'role',
@@ -56,7 +57,8 @@ class UserAdmin(BaseUserAdmin):
         'last_login',
         'cash',
         'followers',
-        'wallet'
+        'binance',
+        'mbank',
     )
     # autocomplete_fields = (
     #     'address',

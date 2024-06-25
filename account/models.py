@@ -29,7 +29,8 @@ class User(AbstractUser):
     cash = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Кошелёк в ETH', editable=False, default=0.00)
     followers = models.IntegerField(verbose_name="Подписчики", default=0, editable=False)
     request_buy = models.ManyToManyField('nft_app.nft', related_name='buy_requests', verbose_name='Запросы на покупку', editable=False)
-    wallet = models.ForeignKey('nft_app.Binance', related_name="user", editable=False,null=True, blank=True, on_delete=models.CASCADE)
+    binance = models.ForeignKey('nft_app.Binance', related_name="user", editable=False,null=True, blank=True, on_delete=models.CASCADE)
+    mbank = models.ForeignKey('nft_app.Mbank', related_name="user", editable=False,null=True, blank=True, on_delete=models.CASCADE)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

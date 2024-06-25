@@ -129,6 +129,7 @@ class MbankSerializer(serializers.ModelSerializer):
 
 class DetailUserSerializer(serializers.ModelSerializer):
     binance = BinanceSerializer()
+    mbank = MbankSerializer()
     class Meta:
         model = User
         exclude = ('is_staff', 'is_active', 'password', 'is_superuser', 'groups', 'user_permissions')
