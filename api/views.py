@@ -12,6 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAdminUser
 from api.paginations import MediumPagination
 from .filters import NftFilter
+from django.core.mail import send_mail
 from .serializers import *
 from nft_app.models import *
 from account.models import User
@@ -269,5 +270,19 @@ class GetMoneyMbank(GenericAPIView):
         return Response({"error": f"Нет бинанс аккаунта"})
 
 
+class MessageForUser(GenericAPIView):
+
+    def post(self, request, *args, **kwargs):
+        subject = 'Важная информация с market_nft'
+        message = request.data.get("message")
+        email_from = 'nursultan.top.game@gmail.com'
+        recipient_list = []
+        for item in User.objects.all():
+            recipient_list.append(item.email)
+        print(recipient_list)
+        send_mail(subject, message, email_from, recipient_list)
+        return Response({
+            "data": "Успешно отправлены письма на электронные почты"
+        })
 
 # Create your views here.
