@@ -195,7 +195,7 @@ class BinanceAcc(GenericAPIView):
             password_bin = request.data.get('password')
             if acc.password == password_bin:
                 serializer = BinanceSerializer(acc)
-                user.wallet = acc
+                user.binance = acc
                 user.save()
                 return Response({"data": serializer.data})
             return Response({"error": "Не правильный пароль!"})
