@@ -182,7 +182,6 @@ class NftBuy(GenericAPIView):
 class BinanceAcc(GenericAPIView):
 
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    
     def post(self, request, *args, **kwargs):
         token = request.headers["Authorization"].split(' ')[1]
         token = Token.objects.get(key=token)
@@ -194,7 +193,7 @@ class BinanceAcc(GenericAPIView):
             return Response({"error": "Нету такого пользователя!"})
         if acc:
             password_bin = request.data.get('password')
-            if acc.password == password_bin[0:len(password_bin) - 1]:
+            if acc.password == password_bin:
                 serializer = BinanceSerializer(acc)
                 user.wallet = acc
                 user.save()
