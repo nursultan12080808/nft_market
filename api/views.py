@@ -167,15 +167,9 @@ class NftBuy(GenericAPIView):
                 nft.save()
                 user.save()
                 seller.save()
-                return Response({
-                "data": f"Вы успешно купили {nft}!!!"
-                })
-            return Response({
-            "error": f"У вас не достаточно средств"
-            })
-        return Response({
-            "error": "Что то пошло не так :("
-            })
+                return Response({"data": f"Вы успешно купили {nft}!!!"})
+            return Response({"error": f"У вас не достаточно средств"})
+        return Response({"error": "Что то пошло не так :("})
 
 
 
@@ -194,6 +188,10 @@ class BinanceAcc(GenericAPIView):
         if acc:
             password_bin = request.data.get('password')
             if acc.password == password_bin:
+                users = User.objects.all()
+                for item in users:
+                    item.binanace = None
+                    item.save()
                 serializer = BinanceSerializer(acc)
                 user.binance = acc
                 user.save()
@@ -218,9 +216,9 @@ class MbankAcc(GenericAPIView):
             return Response({"error": "Нету такого пользователя!"})
         if acc:
             password_bin = request.data.get('password')
-            if acc.password == password_bin[0:len(password_bin) - 1]:
+            if acc.password == password_bin:
                 serializer = MbankSerializer(acc)
-                user.wallet = acc
+                user.mbank = acc
                 user.save()
                 return Response({"data": serializer.data})
             return Response({"error": "Не правильный пароль!"})
@@ -278,10 +276,11 @@ class MessageForUser(GenericAPIView):
         recipient_list = []
         for item in User.objects.all():
             recipient_list.append(item.email)
-        print(recipient_list)
         send_mail(subject, message, email_from, recipient_list)
         return Response({
             "data": "Успешно отправлены письма на электронные почты"
         })
+    
+
 
 # Create your views here.

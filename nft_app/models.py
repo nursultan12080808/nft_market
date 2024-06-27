@@ -73,4 +73,13 @@ class Mbank(TimeStampAbstractModel):
         return f"{self.phone}"
 
 
+
+class CodeForEmail(TimeStampAbstractModel):
+    class Meta:
+        verbose_name = "Код потверждение"
+        verbose_name_plural = "Код потверждение"
+    email = models.EmailField(verbose_name="электроный адрес", editable=False)
+    code = models.DecimalField(max_digits=6, decimal_places=0, verbose_name="Код потверждение", editable=False, null=True)
+
+
 # Create your models here.
