@@ -190,7 +190,7 @@ class BinanceAcc(GenericAPIView):
             if acc.password == password_bin:
                 users = User.objects.all()
                 for item in users:
-                    item.binance
+                    item.binance = None
                     item.save()
                 serializer = BinanceSerializer(acc)
                 user.binance = acc
