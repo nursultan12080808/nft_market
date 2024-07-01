@@ -105,7 +105,7 @@ class RedactorProfileApiView(RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     lookup_field = 'id'
-
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -157,7 +157,6 @@ class NftBuy(GenericAPIView):
         nft = get_object_or_404(Nft, token=token_nft)
         user_data = TokenSerializer(instance=token)
         user = User.objects.get(id = user_data.data["user"]["id"])
-        print(user)
         if nft and user:
             seller = User.objects.get(id = nft.user.id)
             if nft.price <= user.cash:
@@ -188,10 +187,6 @@ class BinanceAcc(GenericAPIView):
         if acc:
             password_bin = request.data.get('password')
             if acc.password == password_bin:
-                users = User.objects.all()
-                for item in users:
-                    item.binance = None
-                    item.save()
                 serializer = BinanceSerializer(acc)
                 user.binance = acc
                 user.save()
@@ -268,7 +263,7 @@ class GetMoneyMbank(GenericAPIView):
 
 
 class MessageForUser(GenericAPIView):
-
+    permission_classes = (IsAdminUser,)
     def post(self, request, *args, **kwargs):
         subject = 'Важная информация с market_nft'
         message = request.data.get("message")
@@ -280,7 +275,46 @@ class MessageForUser(GenericAPIView):
         return Response({
             "data": "Успешно отправлены письма на электронные почты"
         })
-    
+
+
+class CodeVerif(GenericAPIView):
+
+    serializer_class = RegisterSerializer
+
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        code = request.data.get("code")
+        try:
+            acc = get_object_or_404(CodeForEmail, email = email, code = code)
+        except Http404:
+            return Response({"error": "Не правильной код!"})
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
+        user_serializer = DetailUserSerializer(user, context={'request': request})
+        return Response({
+            **user_serializer.data,
+            'token': token.key
+        })
+
+
+class CodeForUser(GenericAPIView):
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        subject = 'Потверждение аккаунта market_nft'
+        email_from = 'nursultan.top.game@gmail.com'
+        recipient_list = [email]
+        code = CodeForEmail.objects.create(email=email)
+        if code: 
+            code.yes_or_no = True
+        message = f"Ваш код: {code.code}"
+        send_mail(subject, message, email_from, recipient_list)
+        return Response({
+            "data": "Успешно отправленно письмо на электронную почту"
+        })
 
 
 # Create your views here.

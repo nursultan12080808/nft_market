@@ -79,7 +79,6 @@ class DetailTokenSerializer(serializers.ModelSerializer):
 
 
 class TokenSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
     class Meta:
         model = Token
         fields = '__all__'

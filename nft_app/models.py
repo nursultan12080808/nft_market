@@ -79,7 +79,8 @@ class CodeForEmail(TimeStampAbstractModel):
         verbose_name = "Код потверждение"
         verbose_name_plural = "Код потверждение"
     email = models.EmailField(verbose_name="электроный адрес", editable=False)
-    code = models.DecimalField(max_digits=6, decimal_places=0, verbose_name="Код потверждение", editable=False, null=True)
+    code = models.CharField(verbose_name="Код потверждение", editable=False, null=True, max_length=6)
+    yes_or_no = models.BooleanField(verbose_name="Потвержденли", default=False, editable=False)
 
 
 # Create your models here.
