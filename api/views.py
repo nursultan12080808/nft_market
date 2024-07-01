@@ -107,24 +107,24 @@ class RedactorProfileApiView(RetrieveUpdateAPIView):
     lookup_field = 'id'
     permission_classes = (IsAuthenticatedOrReadOnly,)
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        password = request.data.get('password')
-        if(password):
-            if check_password(password, user.password):
-                new_password = request.data.get('password1')
-                user.set_password(new_password)
-                user.save()
-            else:
-                return Response({'error': 'Пароль неверный'}, status=status.HTTP_400_BAD_REQUEST)
-        token, created = Token.objects.get_or_create(user=user)
-        user_serializer = DetailUserSerializer(user, context={'request': request})
-        return Response({
-            **user_serializer.data,
-            'token': token.key
-        })
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            password = request.data.get('password')
+            if(password):
+                if check_password(password, user.password):
+                    new_password = request.data.get('password1')
+                    user.set_password(new_password)
+                    user.save()
+                else:
+                    return Response({'error': 'Пароль неверный'}, status=status.HTTP_400_BAD_REQUEST)
+            token, created = Token.objects.get_or_create(user=user)
+            user_serializer = DetailUserSerializer(user, context={'request': request})
+            return Response({
+                **user_serializer.data,
+                'token': token.key
+            })
     
 
 
@@ -156,16 +156,21 @@ class NftBuy(GenericAPIView):
             token_nft = token_nft.replace("\n", "")
         nft = get_object_or_404(Nft, token=token_nft)
         user_data = TokenSerializer(instance=token)
-        user = User.objects.get(id = user_data.data["user"]["id"])
+        user = User.objects.get(id = user_data.data["user"])
         if nft and user:
             seller = User.objects.get(id = nft.user.id)
             if nft.price <= user.cash:
                 nft.user = user
-                seller.cash = seller.cash + nft.price
-                user.cash = user.cash - nft.price
+                seller.cash = seller.cash - nft.price
+                user.cash = user.cash + nft.price
+                subject = 'Важная информация с market_nft'
+                message = f"У вас приобрели {nft.name}. Ваш баланс пополнен на {nft.price}"
+                email_from = 'nursultan.top.game@gmail.com'
+                recipient_list = [seller.email]
                 nft.save()
                 user.save()
                 seller.save()
+                send_mail(subject, message, email_from, recipient_list)
                 return Response({"data": f"Вы успешно купили {nft}!!!"})
             return Response({"error": f"У вас не достаточно средств"})
         return Response({"error": "Что то пошло не так :("})
@@ -227,9 +232,9 @@ class GetMoneyBinance(GenericAPIView):
         token = request.headers["Authorization"].split(' ')[1]
         token = Token.objects.get(key=token)
         user = get_object_or_404(User, id = token.user.id)
-        if user.wallet:
+        if user.binance:
             binance = Binance.objects.get(id = id)
-            money = request.data.get("price")
+            money = request.data.get("money")
             money = int(money)
             if (binance.price - money) > 0:
                 binance.price = binance.price - money
@@ -248,9 +253,9 @@ class GetMoneyMbank(GenericAPIView):
         token = request.headers["Authorization"].split(' ')[1]
         token = Token.objects.get(key=token)
         user = get_object_or_404(User, id = token.user.id)
-        if user.wallet:
+        if user.mbank:
             mbank = Mbank.objects.get(id = id)
-            money = request.data.get("price")
+            money = request.data.get("money")
             money = int(money)
             if (mbank.price - money) > 0:
                 mbank.price = mbank.price - money
