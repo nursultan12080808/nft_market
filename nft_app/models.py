@@ -35,6 +35,7 @@ class Categories(models.Model):
         verbose_name = 'Категория', 
         verbose_name_plural = 'Категории'
     name = models.CharField(verbose_name='Название категории', max_length=100, unique=True)
+    image = models.ImageField(upload_to="category_image/", verbose_name="Изобржение категории")
     def __str__(self) -> str:
         return f'{self.name}'
     
