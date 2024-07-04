@@ -161,16 +161,11 @@ class NftBuy(GenericAPIView):
             seller = User.objects.get(id = nft.user.id)
             if nft.price <= user.cash:
                 nft.user = user
-                seller.cash = seller.cash - nft.price
-                user.cash = user.cash + nft.price
-                subject = 'Важная информация с market_nft'
-                message = f"У вас приобрели {nft.name}. Ваш баланс пополнен на {nft.price}"
-                email_from = 'nursultan.top.game@gmail.com'
-                recipient_list = [seller.email]
+                seller.cash = seller.cash + nft.price
+                user.cash = user.cash - nft.price
                 nft.save()
                 user.save()
                 seller.save()
-                send_mail(subject, message, email_from, recipient_list)
                 return Response({"data": f"Вы успешно купили {nft}!!!"})
             return Response({"error": f"У вас не достаточно средств"})
         return Response({"error": "Что то пошло не так :("})
@@ -264,7 +259,7 @@ class GetMoneyMbank(GenericAPIView):
                 user.save()
                 return Response({"data": f"Ваш баланс паполнен на {money}"})
             return Response({"error": f"На вашем балансе не достаточно средств"})
-        return Response({"error": f"Нет бинанс аккаунта"})
+        return Response({"error": f"Нет мбанк аккаунта"})
 
 
 class MessageForUser(GenericAPIView):
