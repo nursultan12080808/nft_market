@@ -277,44 +277,44 @@ class MessageForUser(GenericAPIView):
         })
 
 
-class CodeVerif(GenericAPIView):
+# class CodeVerif(GenericAPIView):
 
-    serializer_class = RegisterSerializer
-
-
-    def post(self, request, *args, **kwargs):
-        email = request.data.get("email")
-        code = request.data.get("code")
-        try:
-            acc = get_object_or_404(CodeForEmail, email = email, code = code)
-        except Http404:
-            return Response({"error": "Не правильной код!"})
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        token, created = Token.objects.get_or_create(user=user)
-        user_serializer = DetailUserSerializer(user, context={'request': request})
-        return Response({
-            **user_serializer.data,
-            'token': token.key
-        })
+#     serializer_class = RegisterSerializer
 
 
-class CodeForUser(GenericAPIView):
+#     def post(self, request, *args, **kwargs):
+#         email = request.data.get("email")
+#         code = request.data.get("code")
+#         try:
+#             acc = get_object_or_404(CodeForEmail, email = email, code = code)
+#         except Http404:
+#             return Response({"error": "Не правильной код!"})
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.save()
+#         token, created = Token.objects.get_or_create(user=user)
+#         user_serializer = DetailUserSerializer(user, context={'request': request})
+#         return Response({
+#             **user_serializer.data,
+#             'token': token.key
+#         })
 
-    def post(self, request, *args, **kwargs):
-        email = request.data.get("email")
-        subject = 'Потверждение аккаунта market_nft'
-        email_from = 'nursultan.top.game@gmail.com'
-        recipient_list = [email]
-        code = CodeForEmail.objects.create(email=email)
-        if code: 
-            code.yes_or_no = True
-        message = f"Ваш код: {code.code}"
-        send_mail(subject, message, email_from, recipient_list)
-        return Response({
-            "data": "Успешно отправленно письмо на электронную почту"
-        })
+
+# class CodeForUser(GenericAPIView):
+
+#     def post(self, request, *args, **kwargs):
+#         email = request.data.get("email")
+#         subject = 'Потверждение аккаунта market_nft'
+#         email_from = 'nursultan.top.game@gmail.com'
+#         recipient_list = [email]
+#         code = CodeForEmail.objects.create(email=email)
+#         if code: 
+#             code.yes_or_no = True
+#         message = f"Ваш код: {code.code}"
+#         send_mail(subject, message, email_from, recipient_list)
+#         return Response({
+#             "data": "Успешно отправленно письмо на электронную почту"
+#         })
 
 
 # Create your views here.

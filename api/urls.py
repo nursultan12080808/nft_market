@@ -23,9 +23,9 @@ urlpatterns = [
 
     path('user_message/', MessageForUser.as_view()),
 
-    path('send_code/', CodeForUser.as_view()),
+    # path('send_code/', CodeForUser.as_view()),
 
-    path('check_code/', CodeVerif.as_view()),
+    # path('check_code/', CodeVerif.as_view()),
     
     path('redactor_profile/<int:id>/', RedactorProfileApiView.as_view()),
     path('', include(router.urls)),
