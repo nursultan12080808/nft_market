@@ -236,7 +236,12 @@ class GetMoneyBinance(GenericAPIView):
                 user.cash = user.cash + money
                 binance.save()
                 user.save()
-                return Response({"data": f"Ваш баланс паполнен на {money}"})
+                token, created = Token.objects.get_or_create(user=user)
+                user_serializer = DetailUserSerializer(user, context={'request': request})
+                return Response({
+                **user_serializer.data,
+                'token': token.key
+                })
             return Response({"error": f"На вашем балансе не достаточно средств"})
         return Response({"error": f"Нет бинанс аккаунта"})
         
@@ -257,7 +262,12 @@ class GetMoneyMbank(GenericAPIView):
                 user.cash = user.cash + money
                 mbank.save()
                 user.save()
-                return Response({"data": f"Ваш баланс паполнен на {money}"})
+                token, created = Token.objects.get_or_create(user=user)
+                user_serializer = DetailUserSerializer(user, context={'request': request})
+                return Response({
+                **user_serializer.data,
+                'token': token.key
+                })
             return Response({"error": f"На вашем балансе не достаточно средств"})
         return Response({"error": f"Нет мбанк аккаунта"})
 
