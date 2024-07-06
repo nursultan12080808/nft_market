@@ -117,13 +117,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 class BinanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Binance
-        fields = '__all__'
+        exclude = ('password',)
 
 
 class MbankSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mbank
-        fields = '__all__'
+        exclude = ('password',)
 
 
 class DetailUserSerializer(serializers.ModelSerializer):

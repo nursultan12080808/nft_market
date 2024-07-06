@@ -6,6 +6,7 @@ router = DefaultRouter()
 router.register('nfts', NftViewSet)
 router.register('categories', CategoryViewSet)
 router.register('tags', TagViewSet)
+router.register('users', UserViewSet)
 router.register('tokens', TokenViewSet, basename="tokens")
 urlpatterns = [
     path('binance/login/', BinanceAcc.as_view()),
@@ -16,7 +17,6 @@ urlpatterns = [
     path('get_money_binace/<int:id>/', GetMoneyBinance.as_view()),
     path('get_money_mbank/<int:id>/', GetMoneyMbank.as_view()),
 
-    path('user/<int:id>/', UserViewSet.as_view()),
 
     path('auth/login/', LoginApiView.as_view()),
     path('auth/register/', RegisterApiView.as_view()),

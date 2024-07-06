@@ -56,7 +56,7 @@ class TagViewSet(ModelViewSet):
 
 
 
-class UserViewSet(RetrieveAPIView):
+class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = DetailUserSerializer
     lookup_field = 'id'
