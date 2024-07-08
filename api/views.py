@@ -273,7 +273,6 @@ class GetMoneyMbank(GenericAPIView):
 
 
 class MessageForUser(GenericAPIView):
-    permission_classes = (IsAdminUser,)
     def post(self, request, *args, **kwargs):
         subject = 'Важная информация с market_nft'
         message = request.data.get("message")
