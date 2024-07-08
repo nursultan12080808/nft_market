@@ -30,7 +30,7 @@ class NftViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_class = NftFilter
     pagination_class = MediumPagination
-    permission_classes = (IsAuthenticatedOrReadOnly, IsSalesmanOrReadOnly, IsOwnerProductOrReadOnly)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerProductOrReadOnly)
 
     def get_serializer_class(self):
         if self.action == 'partial_update':
