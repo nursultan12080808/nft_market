@@ -278,9 +278,7 @@ class MessageForUser(GenericAPIView):
         subject = 'Важная информация с market_nft'
         message = request.data.get("message")
         email_from = 'nursultan.top.game@gmail.com'
-        recipient_list = []
-        for item in User.objects.all():
-            recipient_list.append(item.email)
+        recipient_list = ['nursultansra@gmail.com']
         send_mail(subject, message, email_from, recipient_list)
         return Response({
             "data": "Успешно отправлены письма на электронные почты"

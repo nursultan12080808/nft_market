@@ -21,6 +21,7 @@ urlpatterns = [
     path('auth/login/', LoginApiView.as_view()),
     path('auth/register/', RegisterApiView.as_view()),
 
+
     path('user_message/', MessageForUser.as_view()),
 
     # path('send_code/', CodeForUser.as_view()),
