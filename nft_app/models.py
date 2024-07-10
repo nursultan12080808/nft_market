@@ -24,6 +24,7 @@ class Nft(TimeStampAbstractModel):
     description = models.TextField(verbose_name="Описание NFT")
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE, related_name="nft")
     category = models.ForeignKey('nft_app.categories', related_name="nfties",verbose_name="Выберите категории", on_delete=models.CASCADE)
+    buy_or_not = models.BooleanField(default=True, verbose_name="Продоваемый или не продается")
     tags = models.ManyToManyField('nft_app.tags', related_name="nfts")
 
     def __str__(self) -> str:
